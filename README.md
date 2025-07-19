@@ -115,4 +115,15 @@ The model can assist banks in proactive retention strategies by flagging potenti
 Try the deployed app here:  
 🔗 [Customer Churn Prediction App](https://customer-churn-prediction-app-eappheqvayifhc9cou8ytwv.streamlit.app/)
 
+---
+
+## 🔗 Useful Links  
+- [Scikit-learn Documentation](https://scikit-learn.org/)  
+- [Streamlit Docs](https://docs.streamlit.io/)  
+- [Matplotlib Docs](https://matplotlib.org/)  
+- [Seaborn Docs](https://seaborn.pydata.org/)  
+
+---
+
+## 🧾 Submitted as part of the Developer Hub Internship Program  
 
