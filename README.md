@@ -1,131 +1,118 @@
-📘 DeveloperHub Task 3 – Customer Churn Prediction using ML
-📌 Task Objective
-This task focuses on building a classification model to predict whether a bank customer is likely to leave the bank (churn) or not, based on demographic and account activity data.
+# 📘 DeveloperHub Task 3 – Customer Churn Prediction using ML
 
-📁 Dataset
-Name: Churn Modelling Dataset
-Source: Kaggle
+## 📌 Task Objective
 
-📊 Features:
-CreditScore
+This task focuses on building a classification model to identify bank customers who are likely to leave (churn) based on their demographic and account activity data using supervised machine learning.
 
-Geography
+---
 
-Gender
+## 📁 Dataset
 
-Age
+- **Name:** Churn Modelling Dataset  
+- **Source:** [Kaggle – Churn Modelling Dataset](https://www.kaggle.com/datasets/shubhendra7/customer-churn-prediction)
 
-Tenure
+---
 
-Balance
+## 📊 Features
 
-NumOfProducts
+| Feature          | Description                        |
+|------------------|------------------------------------|
+| CreditScore      | Customer's credit score            |
+| Geography        | Country of residence               |
+| Gender           | Male or Female                     |
+| Age              | Age of the customer                |
+| Tenure           | Number of years with the bank      |
+| Balance          | Account balance                    |
+| NumOfProducts    | Number of products with the bank   |
+| HasCrCard        | Whether they have a credit card    |
+| IsActiveMember   | Whether they are active            |
+| EstimatedSalary  | Estimated salary in dollars        |
 
-HasCrCard
+### 🎯 Target
 
-IsActiveMember
+- `Exited`:  
+  - 1 = Churned  
+  - 0 = Not Churned
 
-EstimatedSalary
+---
 
-🎯 Target:
-Exited (0 = Not Churned, 1 = Churned)
+## 🛠️ Tools & Libraries Used
 
-🛠️ Tools & Libraries Used
-Pandas – Data loading & preprocessing
+- `Pandas` – Data loading & cleaning  
+- `Matplotlib & Seaborn` – Visualizations  
+- `Scikit-learn` – Model training and evaluation  
+- `Streamlit` – Web-based app interface  
+- `Pickle` – Saving trained model and encoder
 
-Matplotlib & Seaborn – Data Visualization
+---
 
-Scikit-learn – Model training, evaluation
+## 🚀 Approach
 
-Streamlit – Web-based deployment
+### 1. Dataset Loading & Understanding
+- Loaded the dataset using `pandas.read_csv()`
+- Inspected data using `.head()`, `.info()`, `.describe()`
 
-Pickle – Saving trained model and encoder
+### 2. Data Cleaning & Preparation
+- Removed irrelevant columns: `RowNumber`, `CustomerId`, `Surname`
+- Encoded categorical variables:
+  - `Geography`, `Gender` using `LabelEncoder`
+- Scaled numerical features with `StandardScaler`
 
-🚀 Approach
-1. Dataset Loading & Understanding
-Used pandas.read_csv() to load the dataset
+### 3. Exploratory Data Analysis (EDA)
+- Count plots for `Geography`, `Gender`, and `IsActiveMember`
+- Histograms for numerical features
+- Heatmap of feature correlations
+- Churn distribution analysis
 
-Explored with .info(), .describe(), .value_counts()
+### 4. Model Training & Evaluation
+- Data split: 80% training / 20% testing
+- Trained multiple classifiers:
+  - Logistic Regression
+  - Decision Tree Classifier
+  - Random Forest Classifier
+- Best model (Random Forest) saved using `pickle`
+- Also saved the encoder (`encoder.pkl`) for real-time prediction use
 
-2. Data Cleaning & Preparation
-Dropped irrelevant features like RowNumber, CustomerId, and Surname
+### 5. Evaluation Metrics
+- Accuracy Score
+- Confusion Matrix
+- Classification Report
+- Feature Importance (from Random Forest)
 
-Encoded categorical features:
+---
 
-Label Encoding: Gender
+## 📊 Results & Insights
 
-One-Hot Encoding: Geography
+- **Best Model:** Random Forest Classifier
+- **Key Influential Features:**
+  - Age
+  - Geography
+  - Balance
+  - IsActiveMember
 
-Scaled numerical features using StandardScaler
+#### 🔍 Insights:
+- Customers who are older, inactive, and have a high balance tend to churn more
+- Geography impacts churn – some regions had higher churn rates
 
-3. Exploratory Data Analysis (EDA)
-Visualized churn distribution using bar plots
+---
 
-Analyzed age, balance, and salary distributions
+## ✅ Conclusion
 
-Correlation heatmap to detect feature relationships
+This project demonstrates a complete ML pipeline:
 
-Box plots and bar graphs to compare churn vs. features
+- Data preprocessing & transformation  
+- EDA and visualization  
+- Multiple model training & selection  
+- Model evaluation with metrics  
+- Real-time deployment using Streamlit
 
-4. Model Training & Testing
-Split dataset into training (80%) and testing (20%)
+The model can assist banks in proactive retention strategies by flagging potential churners early.
 
-Trained models:
+---
 
-Logistic Regression
+## 🖥️ Streamlit Web App
 
-Decision Tree
+Try the deployed app here:  
+🔗 [Customer Churn Prediction App](https://customer-churn-prediction-app-eappheqvayifhc9cou8ytwv.streamlit.app/)
 
-Random Forest Classifier
 
-Selected best-performing model based on accuracy
-
-Saved model and encoder using pickle
-
-5. Evaluation Metrics
-Accuracy Score
-
-Confusion Matrix
-
-Classification Report
-
-ROC Curve (if applicable)
-
-📊 Results & Insights
-Random Forest achieved the highest accuracy in predicting churn.
-
-Key Influencing Features: Age, Balance, Geography, and IsActiveMember
-
-Encoding and feature scaling significantly improved model performance
-
-✅ Conclusion
-This task covered the full machine learning pipeline:
-
-Data preprocessing
-
-Exploratory analysis
-
-Feature encoding and scaling
-
-Model training and testing
-
-Evaluation
-
-Deployment via Streamlit
-
-The final model helps financial institutions proactively identify customers likely to leave and retain them through better engagement.
-
-🖥️ Streamlit Web App
-Try the deployed model here:
-🔗 Customer Churn Prediction App
-
-🔗 Useful Links
-Scikit-learn Documentation
-
-Streamlit Docs
-
-Matplotlib Docs
-
-Seaborn Docs
-
-🧾 Submitted as part of the Developer Hub Internship Program
