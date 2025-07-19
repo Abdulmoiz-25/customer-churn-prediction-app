@@ -1,65 +1,58 @@
 import streamlit as st
-import pandas as pd
 import numpy as np
+import pandas as pd
 import pickle
 
 # Load model
-model = pickle.load(open('model.pkl', 'rb'))
+with open('model.pkl', 'rb') as f:
+    model = pickle.load(f)
 
-# App title
-st.title("🧠 Bank Customer Churn Prediction App")
+st.set_page_config(page_title="Bank Customer Churn Prediction", layout="centered")
 
-# Sidebar input form
-st.sidebar.header("Enter Customer Data")
+st.title("🏦 Bank Customer Churn Prediction App")
+st.markdown("Enter customer details below to predict if the customer is likely to leave the bank.")
 
-def user_input():
-    credit_score = st.sidebar.slider("Credit Score", 300, 900, 650)
-    age = st.sidebar.slider("Age", 18, 100, 35)
-    tenure = st.sidebar.slider("Tenure", 0, 10, 3)
-    balance = st.sidebar.number_input("Balance", 0.00, 300000.00, 50000.00)
-    num_of_products = st.sidebar.selectbox("Number of Products", [1, 2, 3, 4])
-    has_cr_card = st.sidebar.selectbox("Has Credit Card", [1, 0])  # 1 = Yes, 0 = No
-    is_active_member = st.sidebar.selectbox("Is Active Member", [1, 0])
-    estimated_salary = st.sidebar.number_input("Estimated Salary", 10000.00, 200000.00, 50000.00)
-    gender = st.sidebar.selectbox("Gender", ["Male", "Female"])
-    geography = st.sidebar.selectbox("Geography", ["France", "Germany", "Spain"])
+# Input fields
+credit_score = st.number_input("Credit Score", min_value=300, max_value=900, value=600)
+gender = st.selectbox("Gender", ["Male", "Female"])
+age = st.slider("Age", 18, 100, 30)
+tenure = st.slider("Tenure (Years with bank)", 0, 10, 3)
+balance = st.number_input("Account Balance", min_value=0.0, value=50000.0)
+num_of_products = st.selectbox("Number of Products", [1, 2, 3, 4])
+has_cr_card = st.selectbox("Has Credit Card?", ["Yes", "No"])
+is_active_member = st.selectbox("Is Active Member?", ["Yes", "No"])
+estimated_salary = st.number_input("Estimated Salary", min_value=0.0, value=100000.0)
+geography = st.selectbox("Geography", ["France", "Germany", "Spain"])
 
-    # Encode categorical variables
-    gender = 1 if gender == "Male" else 0
-    geography_germany = 1 if geography == "Germany" else 0
-    geography_spain = 1 if geography == "Spain" else 0
+# Convert inputs
+gender = 1 if gender == "Male" else 0
+has_cr_card = 1 if has_cr_card == "Yes" else 0
+is_active_member = 1 if is_active_member == "Yes" else 0
 
-    data = {
-        'CreditScore': credit_score,
-        'Gender': gender,
-        'Age': age,
-        'Tenure': tenure,
-        'Balance': balance,
-        'NumOfProducts': num_of_products,
-        'HasCrCard': has_cr_card,
-        'IsActiveMember': is_active_member,
-        'EstimatedSalary': estimated_salary,
-        'Geography_Germany': geography_germany,
-        'Geography_Spain': geography_spain
-    }
+# One-hot encoding for geography
+geo_france = 0
+geo_germany = 0
+geo_spain = 0
 
-    return pd.DataFrame(data, index=[0])
+if geography == "Germany":
+    geo_germany = 1
+elif geography == "Spain":
+    geo_spain = 1
+# France is the base case (drop_first=True), so all zeros
 
-# Collect user input
-input_df = user_input()
+# Create input array
+input_data = np.array([[
+    credit_score, gender, age, tenure, balance,
+    num_of_products, has_cr_card, is_active_member, estimated_salary,
+    geo_germany, geo_spain
+]])
 
-# Display input
-st.subheader("📋 Customer Input Summary")
-st.write(input_df)
+# Prediction
+if st.button("Predict Churn"):
+    prediction = model.predict(input_data)[0]
+    probability = model.predict_proba(input_data)[0][1]
 
-# Predict button
-if st.button("🔍 Predict"):
-    prediction = model.predict(input_df)
-    prediction_proba = model.predict_proba(input_df)
-
-    st.subheader("🎯 Prediction Result")
-    st.write("⚠️ **Churn**" if prediction[0] == 1 else "✅ **Not Churn**")
-
-    st.subheader("📊 Prediction Probabilities")
-    st.write(f"**Not Churn**: {prediction_proba[0][0]:.2f}")
-    st.write(f"**Churn**: {prediction_proba[0][1]:.2f}")
+    if prediction == 1:
+        st.error(f"⚠️ The customer is likely to **churn**. (Risk Score: {probability:.2f})")
+    else:
+        st.success(f"✅ The customer is likely to **stay**. (Confidence: {1 - probability:.2f})")
