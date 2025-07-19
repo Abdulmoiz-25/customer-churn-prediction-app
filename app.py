@@ -18,18 +18,17 @@ def user_input():
     tenure = st.sidebar.slider("Tenure", 0, 10, 3)
     balance = st.sidebar.number_input("Balance", 0.00, 300000.00, 50000.00)
     num_of_products = st.sidebar.selectbox("Number of Products", [1, 2, 3, 4])
-    has_cr_card = st.sidebar.selectbox("Has Credit Card", [0, 1])
-    is_active_member = st.sidebar.selectbox("Is Active Member", [0, 1])
+    has_cr_card = st.sidebar.selectbox("Has Credit Card", [1, 0])  # 1 = Yes, 0 = No
+    is_active_member = st.sidebar.selectbox("Is Active Member", [1, 0])
     estimated_salary = st.sidebar.number_input("Estimated Salary", 10000.00, 200000.00, 50000.00)
     gender = st.sidebar.selectbox("Gender", ["Male", "Female"])
     geography = st.sidebar.selectbox("Geography", ["France", "Germany", "Spain"])
 
-    # Encode categorical
+    # Encode categorical variables
     gender = 1 if gender == "Male" else 0
-    geography_france = 1 if geography == "France" else 0
     geography_germany = 1 if geography == "Germany" else 0
+    geography_spain = 1 if geography == "Spain" else 0
 
-    # Manual one-hot encoding
     data = {
         'CreditScore': credit_score,
         'Gender': gender,
@@ -41,23 +40,26 @@ def user_input():
         'IsActiveMember': is_active_member,
         'EstimatedSalary': estimated_salary,
         'Geography_Germany': geography_germany,
-        'Geography_Spain': 1 - geography_france - geography_germany  # If not France or Germany, then Spain
+        'Geography_Spain': geography_spain
     }
 
     return pd.DataFrame(data, index=[0])
 
+# Collect user input
 input_df = user_input()
 
-# Show input
-st.subheader("Customer Input Data")
+# Display input
+st.subheader("📋 Customer Input Summary")
 st.write(input_df)
 
-# Predict
-prediction = model.predict(input_df)
-prediction_proba = model.predict_proba(input_df)
+# Predict button
+if st.button("🔍 Predict"):
+    prediction = model.predict(input_df)
+    prediction_proba = model.predict_proba(input_df)
 
-# Show result
-st.subheader("Prediction")
-st.write("Churn" if prediction[0] == 1 else "Not Churn")
-st.subheader("Prediction Probability")
-st.write(prediction_proba)
+    st.subheader("🎯 Prediction Result")
+    st.write("⚠️ **Churn**" if prediction[0] == 1 else "✅ **Not Churn**")
+
+    st.subheader("📊 Prediction Probabilities")
+    st.write(f"**Not Churn**: {prediction_proba[0][0]:.2f}")
+    st.write(f"**Churn**: {prediction_proba[0][1]:.2f}")
